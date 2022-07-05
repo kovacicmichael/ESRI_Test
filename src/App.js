@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useRef } from "react";
 
-function App() {
+const App = () => {
+  const elementRef = useRef();
+
+  useEffect(_ => {
+    let cleanup;
+    // lazy load the module that loads the JSAPI
+    // and initialize it
+    import("./esri/map").then(
+      app => cleanup = app.initialize(elementRef.current)
+    );
+    return () => cleanup && cleanup();
+  }, []);
+
+  // assign elementRef to the ref of our component
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="viewDiv" ref={elementRef}></div>
+    </>
   );
-}
+};
 
 export default App;
